@@ -10,3 +10,6 @@
 [submodule "lib/tree-sitter"]
 	path = lib/tree-sitter
 	url = https://github.com/tree-sitter/tree-sitter
+[submodule "tools/tree"]
+	path = tools/tree
+	url = https://github.com/peteretelej/tree
