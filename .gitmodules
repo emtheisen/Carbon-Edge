@@ -1,0 +1,12 @@
+[submodule "tools/the_silver_searcher"]
+	path = tools/the_silver_searcher
+	url = https://github.com/ggreer/the_silver_searcher
+[submodule "tools/ripgrep"]
+	path = tools/ripgrep
+	url = https://github.com/BurntSushi/ripgrep
+[submodule "tools/fd"]
+	path = tools/fd
+	url = https://github.com/sharkdp/fd
+[submodule "lib/tree-sitter"]
+	path = lib/tree-sitter
+	url = https://github.com/tree-sitter/tree-sitter
