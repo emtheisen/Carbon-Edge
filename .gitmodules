@@ -16,3 +16,21 @@
 [submodule "gnu/emacs"]
 	path = gnu/emacs
 	url = https://git.savannah.gnu.org/git/emacs
+[submodule "gnu/m4"]
+	path = gnu/m4
+	url = https://git.savannah.gnu.org/git/m4
+[submodule "gnu/make"]
+	path = gnu/make
+	url = https://git.savannah.gnu.org/git/make
+[submodule "gnu/autoconf"]
+	path = gnu/autoconf
+	url = https://git.savannah.gnu.org/git/autoconf
+[submodule "gnu/automake"]
+	path = gnu/automake
+	url = https://git.savannah.gnu.org/git/automake
+[submodule "gnu/texinfo"]
+	path = gnu/texinfo
+	url = https://git.savannah.gnu.org/git/texinfo
+[submodule "gnu/mailutils"]
+	path = gnu/mailutils
+	url = https://git.savannah.gnu.org/git/mailutils
