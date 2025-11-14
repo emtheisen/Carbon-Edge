@@ -13,3 +13,6 @@
 [submodule "tools/tree"]
 	path = tools/tree
 	url = https://github.com/peteretelej/tree
+[submodule "gnu/emacs"]
+	path = gnu/emacs
+	url = https://git.savannah.gnu.org/git/emacs
