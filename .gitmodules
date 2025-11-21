@@ -34,3 +34,6 @@
 [submodule "gnu/mailutils"]
 	path = gnu/mailutils
 	url = https://git.savannah.gnu.org/git/mailutils
+[submodule "tools/fish-shell"]
+	path = tools/fish-shell
+	url = https://github.com/fish-shell/fish-shell.git
