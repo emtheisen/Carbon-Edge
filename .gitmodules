@@ -37,3 +37,6 @@
 [submodule "tools/fish-shell"]
 	path = tools/fish-shell
 	url = https://github.com/fish-shell/fish-shell.git
+[submodule "tools/fzf"]
+	path = tools/fzf
+	url = https://github.com/junegunn/fzf.git
