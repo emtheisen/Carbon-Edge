@@ -40,3 +40,6 @@
 [submodule "tools/fzf"]
 	path = tools/fzf
 	url = https://github.com/junegunn/fzf.git
+[submodule "tools/sphinx"]
+	path = tools/sphinx
+	url = https://github.com/sphinx-doc/sphinx
