@@ -43,3 +43,6 @@
 [submodule "tools/sphinx"]
 	path = tools/sphinx
 	url = https://github.com/sphinx-doc/sphinx
+[submodule "conf/.emacs.d/site-lisp/magit"]
+	path = conf/.emacs.d/site-lisp/magit
+	url = https://github.com/magit/magit.git
