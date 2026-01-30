@@ -49,3 +49,6 @@
 [submodule "tools/vim"]
 	path = tools/vim
 	url = git@github.com:vim/vim.git
+[submodule "tools/bat"]
+	path = tools/bat
+	url = git@github.com:sharkdp/bat.git
