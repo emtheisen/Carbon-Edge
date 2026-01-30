@@ -235,6 +235,8 @@
 ;; Use dired-x
 (require 'dired-x)
 
+;; Dictionary
+(global-set-key (kbd "M-#") 'dictionary-lookup-definition)
 
 ;;
 ;; Customize appearance
@@ -311,13 +313,13 @@
 (global-ligature-mode)
 
 ;; Set fixed-pitch default font
-;; (face-spec-set
-;; 'fixed-pitch
-;; '((t :family
-;;      (cond
-;;           ((member "Consolas" (font-family-list)) "Consolas")
-;;         (t "Monospace"))))
-;; 'face-defface-spec)
+(face-spec-set
+'fixed-pitch
+'((t :family
+     (cond
+          ((member "Consolas" (font-family-list)) "Consolas")
+        (t "Monospace"))))
+'face-defface-spec)
 
 ;;
 ;; General Settings
@@ -565,6 +567,9 @@
 
  ;; Show the highlight line
  (hl-line-mode)
+
+ ;; On the fly checking of spelling in strings and comments
+ (flyspell-prog-mode)
 )
 (add-hook 'prog-mode-hook 'my-prog-mode-hook)
 (add-hook 'yaml-ts-mode-hook 'my-prog-mode-hook)
@@ -829,26 +834,52 @@
 ;;   :ensure
 ;;   :init (exec-path-from-shell-initialize))
 
-(when (executable-find "lldb-mi")
- (use-package dap-mode
-   :ensure
-   :config
-   (dap-ui-mode)
-   (dap-ui-controls-mode 1)
+  (setq dap-cpptools-extension-version "1.13.8")
 
-   (require 'dap-lldb)
-   (require 'dap-gdb-lldb)
-   ;; installs .extension/vscode
-   (dap-gdb-lldb-setup)
-   (dap-register-debug-template
-    "Rust::LLDB Run Configuration"
-    (list :type "lldb"
-          :request "launch"
-          :name "LLDB::Run"
-	   :gdbpath "rust-lldb"
-          ;; uncomment if lldb-mi is not in PATH
-          ;; :lldbmipath "path/to/lldb-mi"
-          ))))
+  (with-eval-after-load 'lsp-rust
+    (require 'dap-cpptools))
+
+  (with-eval-after-load 'dap-cpptools
+    ;; Add a template specific for debugging Rust programs.
+    ;; It is used for new projects, where I can M-x dap-edit-debug-template
+    (dap-register-debug-template "Rust::CppTools Run Configuration"
+                                 (list :type "cppdbg"
+                                       :request "launch"
+                                       :name "Rust::Run"
+                                       :MIMode "gdb"
+                                       :miDebuggerPath "rust-gdb"
+                                       :environment []
+                                       :program "${workspaceFolder}/target/debug/hello / replace with binary"
+                                       :cwd "${workspaceFolder}"
+                                       :console "external"
+                                       :dap-compilation "cargo build"
+                                       :dap-compilation-dir "${workspaceFolder}")))
+
+  (with-eval-after-load 'dap-mode
+    (setq dap-default-terminal-kind "integrated") ;; Make sure that terminal programs open a term for I/O in an Emacs buffer
+    (dap-auto-configure-mode +1))
+
+
+;; (when (executable-find "lldb-mi")
+;;  (use-package dap-mode
+;;    :ensure
+;;    :config
+;;    (dap-ui-mode)
+;;    (dap-ui-controls-mode 1)
+
+;;    (require 'dap-lldb)
+;;    (require 'dap-gdb-lldb)
+;;    ;; installs .extension/vscode
+;;    (dap-gdb-lldb-setup)
+;;    (dap-register-debug-template
+;;     "Rust::LLDB Run Configuration"
+;;     (list :type "lldb"
+;;           :request "launch"
+;;           :name "LLDB::Run"
+;; 	   :gdbpath "rust-lldb"
+;;           ;; uncomment if lldb-mi is not in PATH
+;;           ;; :lldbmipath "path/to/lldb-mi"
+;;           ))))
 
 
 ;;
@@ -1199,32 +1230,32 @@
 	power-mode prescient projectile projectile-ripgrep rg
 	rust-playground rustic spaceline-all-the-icons
 	tokyonight-themes toml-mode transient treemacs
-	treemacs-all-the-icons treemacs-icons-dired
-	treemacs-nerd-icons treemacs-projectile treesit-auto vertico
-	vertico-prescient wfnames which-key with-editor yaml-mode
-	yasnippet zenburn-theme))
+	treemacs-all-the-icons treemacs-icons-dired treemacs-magit
+	treemacs-nerd-icons treemacs-projectile treemacs-tab-bar
+	treesit-auto vertico vertico-prescient wfnames which-key
+	with-editor yaml-mode yasnippet zenburn-theme))
  '(safe-local-variable-values '((ffip-project-root . "~/proj/ngsri/cla-apps/"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :extend nil :stipple nil :background "#2E3440" :foreground "#D8DEE9" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight regular :height 100 :width normal :foundry "MS  " :family "Consolas"))))
  '(eshell-ls-backup ((t (:foreground "#D8DEE9"))))
  '(eshell-ls-directory ((t (:inherit font-lock-function-name-face :foreground "#5E81AC"))))
  '(eshell-ls-executable ((t (:foreground "#8FBCBB" :weight bold))))
  '(eshell-ls-special ((t (:foreground "#EBCB8B" :weight bold))))
  '(eshell-ls-symlink ((t (:inherit font-lock-keyword-face :foreground "#5E81AC" :underline t))))
  '(eshell-prompt ((t (:foreground "#A3BE8C" :weight bold))))
- '(fixed-pitch ((((type graphic)) :family "Aporetic Sans Mono" :height 1.0)))
+ '(fixed-pitch ((((type graphic)) :family "Aporetic Sans Mono" :height 0.9)))
  '(font-lock-comment-face ((t (:slant italic))))
  '(font-lock-doc-face ((t (:slant italic))))
+ '(info-title-1 ((t (:inherit info-title-2 :height 0.8))))
  '(lsp-headerline-breadcrumb-separator-face ((t (:inherit shadow :foreground "#88c0d0" :height 0.8))))
- '(lsp-ui-sideline-current-symbol ((((background light)) (:foreground "black" :weight ultra-bold :box (:line-width (1 . -1) :color "black") :height 0.9 :family "Consolas")) (t (:foreground "white" :weight ultra-bold :box (:line-width (1 . -1) :color "white") :height 0.9 :family "Consolas"))))
- '(lsp-ui-sideline-global ((t (:family "Consolas"))))
- '(lsp-ui-sideline-symbol ((t (:foreground "grey" :box (:line-width (1 . -1) :color "grey") :height 0.9 :family "Consolas"))))
- '(lsp-ui-sideline-symbol-info ((t (:slant italic :height 0.99 :family "Consolas"))))
+ '(lsp-inlay-hint-type-face ((t (:inherit lsp-inlay-hint-face :height 0.95))))
  '(markdown-code-face ((t (:inherit default :font "Consolas"))))
- '(menu ((t (:background "#3b4252" :foreground "#81a1c1" :height 110 :family "Source Sans Pro"))))
+ '(menu ((t (:background "#3b4252" :foreground "#81a1c1" :height 0.9 :family "Source Sans Pro"))))
+ '(mode-line ((t (:background "#4C566A" :foreground "#88C0D0" :height 1.0))))
  '(org-document-title ((t (:inherit default :weight bold :font "Source Sans Pro" :height 160 :underline nil))))
  '(org-level-1 ((t (:inherit default :weight bold :font "Source Sans Pro" :height 150))))
  '(org-level-2 ((t (:inherit default :weight bold :font "Source Sans Pro" :height 140))))
@@ -1234,6 +1265,7 @@
  '(org-level-6 ((t (:inherit default :weight bold :font "Source Sans Pro"))))
  '(org-level-7 ((t (:inherit default :weight bold :font "Source Sans Pro"))))
  '(org-level-8 ((t (:inherit default :weight bold :font "Source Sans Pro"))))
+ '(shr-h1 ((t (:weight bold :height 0.9))))
  '(tab-bar ((t (:inherit variable-pitch :font "Source Sans Pro" :height 100 :background "#2E3440" :foreground "#88c0d0"))))
  '(tab-bar-tab ((t (:inherit tab-bar :background "#4c566a" :foreground "#88c0d0" :box (:line-width (1 . 1) :style flat-button)))))
  '(tab-bar-tab-highlight ((t (:height 110 :background "#3b4252" :foreground "#88c0d0" :box (:line-width (1 . 1) :style flat-button)))))
@@ -1241,6 +1273,12 @@
  '(tooltip ((t (:background "#4C566A" :foreground "#D8DEE9" :height 1.1 :family "Source Sans Pro"))))
  '(variable-pitch ((((type graphic)) :family "iA Writer Quattro V" :height 1.0)))
  '(variable-pitch-text ((t (:inherit variable-pitch :family "iA Writer Quartro V")))))
+
+ ;; '(lsp-ui-sideline-current-symbol ((((background light)) (:foreground "black" :weight ultra-bold :box (:line-width (1 . -1) :color "black") :height 1.0 :family "Consolas")) (t (:foreground "white" :weight ultra-bold :box (:line-width (1 . -1) :color "white") :height 1.0 :family "Consolas"))))
+ ;; '(lsp-ui-sideline-global ((t (:family "Consolas"))))
+ ;; '(lsp-ui-sideline-symbol ((t (:foreground "grey" :box (:line-width (1 . -1) :color "grey") :height 1.0 :family "Consolas"))))
+ ;; '(lsp-ui-sideline-symbol-info ((t (:slant italic :height 1.0 :family "Consolas"))))
+
 
  ;; '(tab-bar ((((type graphic)) :height 100 :background "#2e3440" :foreground "#81a1c1")))
  ;; '(tab-bar-tab ((t (:inherit tab-bar :background "#4c566a" :box (:line-width (1 . 1) :style released-button)))))
@@ -1324,7 +1362,7 @@
 
 ;; How tall the mode-line should be. It's only respected in GUI.
 ;; If the actual char height is larger, it respects the actual height.
-(setq doom-modeline-height 17)
+(setq doom-modeline-height 12)
 
 ;; How wide the mode-line bar should be. It's only respected in GUI.
 (setq doom-modeline-bar-width 4)
@@ -1686,8 +1724,8 @@
   consult-theme :preview-key '(:debounce 0.2 any)
   consult-ripgrep consult-git-grep consult-grep consult-man
   consult-bookmark consult-recent-file consult-xref
-  consult--source-bookmark consult--source-file-register
-  consult--source-recent-file consult--source-project-recent-file
+  consult-source-bookmark consult-source-file-register
+  consult-source-recent-file consult-source-project-recent-file
   ;; :preview-key "M-."
   :preview-key '(:debounce 0.4 any))
 
