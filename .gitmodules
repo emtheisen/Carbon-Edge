@@ -52,3 +52,6 @@
 [submodule "tools/bat"]
 	path = tools/bat
 	url = git@github.com:sharkdp/bat.git
+[submodule "tools/delta"]
+	path = tools/delta
+	url = git@github.com:dandavison/delta.git
