@@ -46,3 +46,6 @@
 [submodule "conf/.emacs.d/site-lisp/magit"]
 	path = conf/.emacs.d/site-lisp/magit
 	url = https://github.com/magit/magit.git
+[submodule "tools/vim"]
+	path = tools/vim
+	url = git@github.com:vim/vim.git
