@@ -46,12 +46,3 @@
 [submodule "conf/.emacs.d/site-lisp/magit"]
 	path = conf/.emacs.d/site-lisp/magit
 	url = https://github.com/magit/magit.git
-[submodule "tools/vim"]
-	path = tools/vim
-	url = git@github.com:vim/vim.git
-[submodule "tools/bat"]
-	path = tools/bat
-	url = git@github.com:sharkdp/bat.git
-[submodule "tools/delta"]
-	path = tools/delta
-	url = git@github.com:dandavison/delta.git
