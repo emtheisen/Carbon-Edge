@@ -16,9 +16,6 @@
 [submodule "gnu/emacs"]
 	path = gnu/emacs
 	url = https://git.savannah.gnu.org/git/emacs
-[submodule "gnu/m4"]
-	path = gnu/m4
-	url = https://git.savannah.gnu.org/git/m4
 [submodule "gnu/make"]
 	path = gnu/make
 	url = https://git.savannah.gnu.org/git/make
