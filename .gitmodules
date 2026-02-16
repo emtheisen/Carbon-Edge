@@ -58,3 +58,6 @@
 [submodule "gnu/m4"]
 	path = gnu/m4
 	url = http://git.savannah.gnu.org/r/m4.git
+[submodule "tools/bat-extras"]
+	path = tools/bat-extras
+	url = https://github.com/eth-p/bat-extras.git
