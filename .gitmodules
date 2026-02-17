@@ -61,3 +61,6 @@
 [submodule "tools/bat-extras"]
 	path = tools/bat-extras
 	url = https://github.com/eth-p/bat-extras.git
+[submodule "gnu/less"]
+	path = gnu/less
+	url = https://github.com/gwsw/less.git
