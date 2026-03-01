@@ -64,3 +64,6 @@
 [submodule "gnu/less"]
 	path = gnu/less
 	url = https://github.com/gwsw/less.git
+[submodule "conf/emacs-rust-config"]
+	path = conf/emacs-rust-config
+	url = https://github.com/rksm/emacs-rust-config.git
