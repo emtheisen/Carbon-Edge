@@ -4,15 +4,18 @@
 [submodule "tools/ripgrep"]
 	path = tools/ripgrep
 	url = https://github.com/BurntSushi/ripgrep
+	branch = master
 [submodule "tools/fd"]
 	path = tools/fd
 	url = https://github.com/sharkdp/fd
+	branch = master
 [submodule "lib/tree-sitter"]
 	path = lib/tree-sitter
 	url = https://github.com/tree-sitter/tree-sitter
 [submodule "tools/tree"]
 	path = tools/tree
 	url = https://github.com/peteretelej/tree
+	branch = main
 [submodule "gnu/emacs"]
 	path = gnu/emacs
 	url = https://git.savannah.gnu.org/git/emacs
@@ -34,33 +37,41 @@
 [submodule "tools/fish-shell"]
 	path = tools/fish-shell
 	url = https://github.com/fish-shell/fish-shell.git
+	branch = master
 [submodule "tools/fzf"]
 	path = tools/fzf
 	url = https://github.com/junegunn/fzf.git
+	branch = master
 [submodule "tools/sphinx"]
 	path = tools/sphinx
 	url = https://github.com/sphinx-doc/sphinx
+	branch = master
 [submodule "conf/.emacs.d/site-lisp/magit"]
 	path = conf/.emacs.d/site-lisp/magit
 	url = https://github.com/magit/magit.git
 [submodule "tools/bat"]
 	path = tools/bat
 	url = https://github.com/sharkdp/bat.git
+	branch = master
 [submodule "tools/delta"]
 	path = tools/delta
 	url = https://github.com/dandavison/delta.git
+	branch = main
 [submodule "tools/vim"]
 	path = tools/vim
 	url = https://github.com/vim/vim.git
+	branch = master
 [submodule "tools/kitty"]
 	path = tools/kitty
 	url = https://github.com/kovidgoyal/kitty.git
+	branch = master
 [submodule "gnu/m4"]
 	path = gnu/m4
 	url = http://git.savannah.gnu.org/r/m4.git
 [submodule "tools/bat-extras"]
 	path = tools/bat-extras
 	url = https://github.com/eth-p/bat-extras.git
+	branch = master
 [submodule "gnu/less"]
 	path = gnu/less
 	url = https://github.com/gwsw/less.git
