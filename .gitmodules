@@ -90,3 +90,7 @@
 	path = conf/emacs-rust-config
 	url = https://github.com/rksm/emacs-rust-config.git
 	branch = master
+[submodule "tools/cli"]
+	path = tools/cli
+	url = https://github.com/cli/cli.git
+	branch = trunk
