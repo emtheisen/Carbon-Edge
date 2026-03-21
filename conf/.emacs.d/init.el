@@ -887,6 +887,31 @@
 ;;
 ;;(require 'org)
 
+;; with org-mac-link message:// links are handed over to the macOS system,
+;; which has built-in handling. On Windows and Linux, we can use thunderlink!
+(when (not (string-equal system-type "darwin"))
+  ;; modify this for your system
+  (setq thunderbird-program "/usr/bin/thunderbird")
+
+  (defun org-message-thunderlink-open (slash-message-id)
+    "Handler for org-link-set-parameters that converts a standard message:// link into
+   a thunderlink and then invokes thunderbird."
+    ;; remove any / at the start of slash-message-id to create real message-id
+    (let ((message-id
+           (replace-regexp-in-string (rx bos (* "/"))
+                                     ""
+                                     slash-message-id)))
+      (start-process
+       (concat "thunderlink: " message-id)
+       nil
+       thunderbird-program
+       "-thunderlink"
+       (concat "thunderlink://messageid=" message-id)
+       )))
+  ;; on message://aoeu link, this will call handler with //aoeu
+  (org-link-set-parameters "message" :follow #'org-message-thunderlink-open))
+
+
 ;; Must do this so the agenda knows where to look for my files
 (setq org-agenda-files '("~/org"))
 
@@ -1223,17 +1248,18 @@
 	doom-modeline dumb-jump eglot elgrep embark embark-consult
 	emojify excorporate exec-path-from-shell find-file-in-project
 	find-file-in-repository flycheck flyspell-correct fontawesome
-	gnuplot gnuplot-mode highlight-doxygen ligature-pragmatapro
-	lsp-treemacs lsp-ui marginalia nerd-icons-completion
-	nerd-icons-ivy-rich nord-theme nov octicons orderless org
-	org-super-agenda orgtbl-ascii-plot pdf-tools pdf-view-restore
-	power-mode prescient projectile projectile-ripgrep rg
-	rust-playground rustic spaceline-all-the-icons
-	tokyonight-themes toml-mode transient treemacs
-	treemacs-all-the-icons treemacs-icons-dired treemacs-magit
-	treemacs-nerd-icons treemacs-projectile treemacs-tab-bar
-	treesit-auto vertico vertico-prescient wfnames which-key
-	with-editor yaml-mode yasnippet zenburn-theme))
+	fzf gnuplot gnuplot-mode highlight-doxygen
+	ligature-pragmatapro lsp-treemacs lsp-ui magit-delta
+	marginalia nerd-icons-completion nerd-icons-ivy-rich
+	nord-theme nov octicons orderless org org-super-agenda
+	orgtbl-ascii-plot pdf-tools pdf-view-restore power-mode
+	prescient projectile projectile-ripgrep rg rust-playground
+	rustic spaceline-all-the-icons tokyonight-themes toml-mode
+	transient treemacs treemacs-all-the-icons treemacs-icons-dired
+	treemacs-magit treemacs-nerd-icons treemacs-projectile
+	treemacs-tab-bar treesit-auto vertico vertico-prescient
+	wfnames which-key with-editor yaml-mode yasnippet
+	zenburn-theme))
  '(safe-local-variable-values '((ffip-project-root . "~/proj/ngsri/cla-apps/"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -1267,9 +1293,9 @@
  '(org-level-8 ((t (:inherit default :weight bold :font "Source Sans Pro"))))
  '(shr-h1 ((t (:weight bold :height 0.9))))
  '(tab-bar ((t (:inherit variable-pitch :font "Source Sans Pro" :height 100 :background "#2E3440" :foreground "#88c0d0"))))
- '(tab-bar-tab ((t (:inherit tab-bar :background "#4c566a" :foreground "#88c0d0" :box (:line-width (1 . 1) :style flat-button)))))
- '(tab-bar-tab-highlight ((t (:height 110 :background "#3b4252" :foreground "#88c0d0" :box (:line-width (1 . 1) :style flat-button)))))
- '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :background "#2e3440" :foreground "#4c566a" :box (:line-width (1 . 1) :style flat-button)))))
+ '(tab-bar-tab ((t (:inherit tab-bar :background "#2E3440" :foreground "#88c0d0" :box (:line-width (1 . 1) :style released-button)))))
+ '(tab-bar-tab-highlight ((t (:height 110 :background "#3b4252" :foreground "#88c0d0" :box (:line-width (1 . 1))))))
+ '(tab-bar-tab-inactive ((t (:inherit tab-bar-tab :background "#3b4252" :foreground "#4c566a" :box (1 . 1)))))
  '(tooltip ((t (:background "#4C566A" :foreground "#D8DEE9" :height 1.1 :family "Source Sans Pro"))))
  '(variable-pitch ((((type graphic)) :family "iA Writer Quattro V" :height 1.0)))
  '(variable-pitch-text ((t (:inherit variable-pitch :family "iA Writer Quartro V")))))
@@ -1814,6 +1840,86 @@
 ;; Use dumb-jump for xref
 (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 
+(defun emacs-uri-handler (uri)
+  "Handles emacs URIs in the form: emacs:///path/to/file/LINENUM"
+  (save-match-data
+    (if (string-match "emacs://\\(.*\\)/\\([0-9]+\\)$" uri)
+        (let ((filename (match-string 1 uri))
+              (linenum (match-string 2 uri)))
+          (while (string-match "\\(%20\\)" filename)
+            (setq filename (replace-match " " nil t filename 1)))
+          (with-current-buffer (find-file filename)
+            (goto-line (string-to-number linenum))))
+      (beep)
+      (message "Unable to parse the URI <%s>"  uri))))
+
+;;
+;; sshfs
+;;
+(defconst mpn-file-remote-mount-points
+  (mapcar (lambda (d) (directory-file-name
+                       (expand-file-name d)))
+          '("~/.guinea"))
+  "List of locations where remote file systems have been mounted.
+Each directory listed must be an absolute expanded path and must
+not end with a slash.")
+
+(push (let ((re (regexp-opt mpn-file-remote-mount-points nil)))
+        (list (concat "\\`" re "\\(?:/\\|\\'\\)")
+              (concat temporary-file-directory "remote")
+              t))
+      auto-save-file-name-transforms)
+
+(defun mpn-file-remote-mount-p (&optional file-name)
+  "Return whether FILE-NAME is under a remote mount point.
+Use ‘buffer-file-name’ if FILE-NAME is not given.  List of remote
+mount points is defined in ‘mpn-file-remote-mount-points’
+variable."
+  (when-let ((name (or file-name buffer-file-name)))
+    (let ((dirs mpn-file-remote-mount-points)
+          (name-len (length name))
+          dir dir-len matched)
+      (while (and dirs (not matched))
+        (setq dir (car dirs)
+              dirs (cdr dirs)
+              dir-len (length dir)
+              matched (and (> name-len dir-len)
+                           (eq ?/ (aref name dir-len))
+                           (eq t (compare-strings name 0 dir-len
+                                                  dir 0 dir-len)))))
+      matched)))
+
+(defun mpn-dont-lock-remote-files ()
+  "Set ‘create-lockfiles’ to nil if buffer opens a remote file.
+Use ‘mpn-file-remote-mount-p’ to determine whether opened file is
+remote or not.  Do nothing if ‘create-lockfiles’ is already nil."
+  (and create-lockfiles
+       (mpn-file-remote-mount-p)
+       (setq-local create-lockfiles nil)))
+
+(add-hook 'find-file-hook #'mpn-dont-lock-remote-files)
+
+;; (use-package eglot
+;;   :config
+;;   (setq eglot-events-buffer-size 0
+;;         eglot-ignored-server-capabilities '(:inlayHintProvider)
+;;         eglot-confirm-server-initiated-edits nil))
+
+;; (use-package rustic
+;;   :config
+;;   ; Tell rustic where to find the cargo binary
+;;   (setq rustic-cargo-bin-remote "/usr/local/cargo/bin/cargo")
+;;   (setq rustic-lsp-client 'eglot))
+
 ;;
 ;; Remote hosts
 ;;
+(defun guinea ()
+  (interactive)
+  (dired "/sshx:etheisen@guinea:/home/etheisen")
+  )
+
+(defun labrat ()
+  (interactive)
+  (dired "/sshx:etheisen@labrat:/home/etheisen")
+  )
